@@ -205,9 +205,7 @@ BUILD_JOBS ?= $(shell nproc)
 # The purpose of cp_resources is to guarantee same acceleration sources are used
 .PHONY: cp_sources
 cp_sources:
-	cp -r $(CUR_PROJECT_DIR)/../../verilog/verilog_src $(PROJ_DIR)
-	cp -r $(CUR_PROJECT_DIR)/../../verilog/cfu.v $(CFU_VERILOG)
-	cp -r $(CUR_PROJECT_DIR)/../../acceleration_src/src $(PROJ_DIR)
+	../cp_sources.sh $(PROJ_DIR)
 
 .PHONY: clean_sources
 clean_sources:
@@ -332,7 +330,7 @@ TTY_TARGETS := load unit run
 
 ifneq 'sim' '$(PLATFORM)'
 # $(PLATFORM) == 'common_soc' or 'hps'
-prog: $(CFU_VERILOG)
+prog: cp_sources $(CFU_VERILOG)
 	$(SOC_MK) prog
 	../clean_up.sh $(PROJ_DIR)
 
