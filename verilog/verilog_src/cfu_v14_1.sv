@@ -5,7 +5,7 @@
 // Uses buffer of width 32
 // Uses quant 2
 // Async writing to computation
-`include "verilog_src/conf.sv"
+`include "verilog_src/version.sv"
 `ifdef CFU_VERSION_14_1
 `include "verilog_src/quant_v2.sv"
 

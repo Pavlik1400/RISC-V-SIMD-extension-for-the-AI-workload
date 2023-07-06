@@ -56,6 +56,11 @@ inline void ConvPerChannel(const ConvParams& params,
   const int filters_per_group = output_depth / groups;
   const int output_height     = output_shape.Dims(1);
   const int output_width      = output_shape.Dims(2);
+  printf("================================\n");
+  printf("input_depth: %d, output_depth: %d, input_width: %d, output_width: %d\n", input_depth, output_depth, input_width, output_width);
+  printf("filter_width: %d, filter_height: %d, input_height: %d, output_height: %d\n", filter_width, filter_height, input_height, output_height);
+  printf("pad_width: %d, pad_height: %d, output_activation_min: %ld, output_activation_max: %ld\n", pad_width, pad_height, output_activation_min, output_activation_max);
+  printf("filter_input_depth: %d, filters_per_group: %d, input_offset: %ld, output_offset: %ld\n", filter_input_depth, filters_per_group, input_offset, output_offset);
   for (int batch = 0; batch < batches; ++batch) {
     for (int out_y = 0; out_y < output_height; ++out_y) {
       const int in_y_origin = (out_y * stride_height) - pad_height;

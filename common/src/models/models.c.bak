@@ -31,6 +31,8 @@
 
 // My models include anchor
 #include "models/sine/sine.h"
+#include "models/simc_3_MIXED_v2/simc_3_MIXED_v2.h"
+#include "models/simc_3_MIXED_v2_no_quant/simc_3_MIXED_v2_no_quant.h"
 
 inline void no_menu() {}
 
@@ -50,6 +52,9 @@ static struct Menu MENU = {
 #endif
 #if defined(INCLUDE_MODEL_SIMC_3_MIXED_V2) || defined(INCLUDE_ALL_TFLM_EXAMPLES)
         MENU_ITEM(AUTO_INC_CHAR, "Signal modulation classification model 3", simc_3_MIXED_v2_menu),
+#endif  
+#if defined(INCLUDE_MODEL_SIMC_3_MIXED_V2_NO_QUANT) || defined(INCLUDE_ALL_TFLM_EXAMPLES)
+        MENU_ITEM(AUTO_INC_CHAR, "Signal modulation classification model 3 no quant", simc_3_MIXED_v2_no_quant_menu),
 #endif  
 #if defined(INCLUDE_MODEL_SINE) || defined(INCLUDE_ALL_TFLM_EXAMPLES)
         MENU_ITEM(AUTO_INC_CHAR, "Primitive sine model", sine_menu),

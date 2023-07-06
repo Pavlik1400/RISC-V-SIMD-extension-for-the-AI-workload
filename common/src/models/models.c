@@ -31,6 +31,8 @@
 
 // My models include anchor
 #include "models/cnn_1d_v012_radioml/cnn_1d_v012_radioml.h"
+#include "models/simc_3_MIXED_v2/simc_3_MIXED_v2.h"
+#include "models/simc_3_MIXED_v2_no_quant/simc_3_MIXED_v2_no_quant.h"
 #include "models/sine/sine.h"
 
 inline void no_menu() {}

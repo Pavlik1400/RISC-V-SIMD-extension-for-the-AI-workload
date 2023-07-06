@@ -42,7 +42,7 @@ inline void ConvPerChannel(const ConvParams& params,
   const int pad_width = 3;
   (void)pad_width;
 
-  const int32_t output_offset         = -128;
+  const int32_t output_offset         = params.output_offset;
   const int32_t output_activation_min = -128;
   const int32_t output_activation_max = 127;
 
@@ -79,9 +79,11 @@ inline void ConvPerChannel(const ConvParams& params,
     cfu_op0(CFU_WRITE_OUTPUT_SHIFT, 0, output_shift[out_channel]);
 
     // Copy kernel
+    int filter_size        = filter_width * input_depth;
+    int filter_addr_offset = out_channel * filter_size;
     if (input_depth == 2) {
-      for (int kernel_addr = 0; kernel_addr < filter_width * input_depth; kernel_addr += 2) {
-        int addr = out_channel * (8 * input_depth) + kernel_addr;
+      for (int kernel_addr = 0; kernel_addr < filter_size; kernel_addr += 2) {
+        int addr = filter_addr_offset + kernel_addr;
 
         int32_t value         = 0;
         int16_t* value_16_ptr = reinterpret_cast<int16_t*>(&value);
@@ -89,8 +91,8 @@ inline void ConvPerChannel(const ConvParams& params,
         cfu_op0(CFU_WRITE_FILTER_BUFFER, kernel_addr * buffer_addr_multiplier, value);
       }
     } else {
-      for (int kernel_addr = 0; kernel_addr < filter_width * input_depth; kernel_addr += 4) {
-        int addr             = out_channel * (8 * input_depth) + kernel_addr;
+      for (int kernel_addr = 0; kernel_addr < filter_size; kernel_addr += 4) {
+        int addr             = filter_addr_offset + kernel_addr;
         int32_t filter_value = *reinterpret_cast<const int32_t*>(filter_data + addr);
         cfu_op0(CFU_WRITE_FILTER_BUFFER, kernel_addr, filter_value);
       }
@@ -99,9 +101,6 @@ inline void ConvPerChannel(const ConvParams& params,
     // Copy input - first 8 xs
     int input_cur_x   = -pad_width;
     int write_at_once = (input_depth == 2) ? 2 : 4;
-
-    int filter_x_mod           = (write_at_once == 2) ? 8 : 9;
-    int initial_start_filter_x = 0;
 
     for (int filter_x = 0; filter_x < 8; ++filter_x) {
       if (write_at_once == 2) {
@@ -133,6 +132,10 @@ inline void ConvPerChannel(const ConvParams& params,
 
       ++input_cur_x;
     }
+
+    // input depth == no async writing -> buffer size is 1 row smaller
+    int filter_x_mod           = (write_at_once == 2) ? 8 : 9;
+    int initial_start_filter_x = 0;
 
     int start_filter_x     = initial_start_filter_x;
     int cur_write_filter_x = (input_depth == 2) ? initial_start_filter_x : 8;

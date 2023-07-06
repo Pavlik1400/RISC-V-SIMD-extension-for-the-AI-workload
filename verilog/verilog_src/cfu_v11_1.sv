@@ -1,6 +1,6 @@
 // Differs from v11 by loading data from buffers to intermediate registers
 // Differs from v9 by quantation module.
-`include "verilog_src/conf.sv"
+`include "verilog_src/version.sv"
 `ifdef CFU_VERSION_11_1
 
 `include "verilog_src/quant.sv"

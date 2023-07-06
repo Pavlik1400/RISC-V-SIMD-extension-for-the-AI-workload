@@ -46,5 +46,7 @@ BUILD_JOBS=16
 # Uncomment this line to include the ASCII animated donut demo.
 # DEFINES += DONUT_DEMO
 
+export LOAD_GLOBAL_SOURCES=1
+export CLEAN_LOCAL_SOURCES=1
 
 include ../proj.mk

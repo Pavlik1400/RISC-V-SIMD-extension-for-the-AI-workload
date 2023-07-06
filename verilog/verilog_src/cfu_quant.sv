@@ -1,4 +1,4 @@
-`include "conf.sv"
+`include "verilog_src/version.sv"
 `ifdef CFU_VERSION_QUANT
 `include "quant.sv"
 

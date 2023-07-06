@@ -2,7 +2,7 @@
 // Uses buffer of width 32
 // Uses quant 2
 // Async writing to computation
-`include "verilog_src/conf.sv"
+`include "verilog_src/version.sv"
 `ifdef CFU_VERSION_14
 `include "verilog_src/quant_v2.sv"
 
@@ -18,10 +18,11 @@ module conv1d #(
     output reg [INT32_SIZE-1:0] ret,
     output reg                  output_buffer_valid = 1
 );
-  localparam PADDING = 4;  // (8 / 2)
-  localparam MAX_INPUT_SIZE = 1024;
-  localparam MAX_INPUT_CHANNELS = 128;
-  localparam KERNEL_LENGTH = 8;
+  `include "verilog_src/cfu_configuration.svh"
+  // localparam PADDING = 4;  // (8 / 2)
+  // localparam MAX_INPUT_SIZE = 1024;
+  // localparam MAX_INPUT_CHANNELS = 128;
+  // localparam KERNEL_LENGTH = 8;
 
   // localparam SUM_AT_ONCE = 1;
   // localparam SUM_AT_ONCE = 2;

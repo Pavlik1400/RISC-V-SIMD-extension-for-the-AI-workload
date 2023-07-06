@@ -25,7 +25,8 @@ inline void ConvPerChannel(const ConvParams& params,
 
   const int pad_width = 3;
 
-  const int32_t output_offset         = -128;
+  // const int32_t output_offset         = -128;
+  const int32_t output_offset      = params.output_offset;
   const int32_t output_activation_min = -128;
   const int32_t output_activation_max = 127;
 

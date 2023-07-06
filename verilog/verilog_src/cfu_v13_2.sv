@@ -1,7 +1,7 @@
 // No write_at_once
 // Uses quant 2
 // Async writing to computation
-`include "verilog_src/conf.sv"
+`include "verilog_src/version.sv"
 `ifdef CFU_VERSION_13_2
 `include "verilog_src/quant_v2.sv"
 
