@@ -38,6 +38,7 @@ def dump_results(
     cm_test: Optional[np.ndarray] = None,
     cls_to_acc_test: Optional[Dict] = None,
     snr_to_acc_test: Optional[Dict] = None,
+    short_description="",
     dump_model=False,
 ):
     results = {
@@ -46,6 +47,7 @@ def dump_results(
         "n_parameters": get_model_parameters(model),
         "dataset_name": dataset_name.name,
         "dataset_path": dataset_path,
+        "short_description": short_description,
     }
 
     def add_value(name, value):
