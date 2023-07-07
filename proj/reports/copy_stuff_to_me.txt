@@ -1,0 +1,35 @@
+Running Run cnn_1d_v012_radioml tests (check for expected outputs)
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250666464 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250675142 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250695220 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250682185 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250667000 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250669007 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250696514 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250671481 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250693654 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250694645 )  cycles total
+Copied 256 bytes at 0x40102a20
+Running cnn_1d_v012_radioml model classification
+..........................................   251M (    250694495 )  cycles total
+OK   cnn_1d_v012_radioml tests passed

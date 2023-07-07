@@ -32,6 +32,7 @@ DEFINES += INCLUDE_MODEL_CNN_1D_V012_RADIOML
 # DEFINES += INCLUDE_MODEL_PDTI8
 # DEFINES += INCLUDE_MODEL_SIMC_3_MIXED_V2
 # DEFINES += INCLUDE_MODEL_SIMC_3_MIXED_V2_NO_QUANT
+# DEFINES += ADD_MEASURE_TIME_ANCHORS
 
 # Uncomment to include all TFLM examples (pdti8, micro_speech, magic_wand)
 #DEFINES += INCLUDE_ALL_TFLM_EXAMPLES
@@ -48,7 +49,7 @@ BUILD_JOBS=16
 # Uncomment this line to include the ASCII animated donut demo.
 # DEFINES += DONUT_DEMO
 
-export LOAD_GLOBAL_SOURCES=1
-export CLEAN_LOCAL_SOURCES=1
+export LOAD_GLOBAL_SOURCES=0
+export CLEAN_LOCAL_SOURCES=0
 
 include ../proj.mk
