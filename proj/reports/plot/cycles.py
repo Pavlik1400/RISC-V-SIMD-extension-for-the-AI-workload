@@ -8,10 +8,13 @@ import os
 # text_additional_height = 5e7
 text_additional_height = 2e7
 
-def main(simulation_filepath: str, hardware_filepath: str, save_method: SaveMethod, output_dir: str):
+
+def main(
+    simulation_filepath: str, hardware_filepath: str, save_method: SaveMethod, output_dir: str
+):
     simulation_report: Dict = load_report_or(simulation_filepath, {})
     hardware_report: Dict = load_report_or(hardware_filepath, {})
-    
+
     meaned_simulation_data = {}
     for k, simulations_cycles in simulation_report.items():
         meaned_simulation_data[k] = np.mean(simulations_cycles)
@@ -95,6 +98,6 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", "-o", default=".")
     parser.add_argument("--save_method", "-m", default="show", help="Supported: [show, png, pgf]")
     args = parser.parse_args()
-    
+
     save_method = SaveMethod.from_str(args.save_method)
     main(args.simulation_report, args.hardware_report, save_method, args.output_dir)

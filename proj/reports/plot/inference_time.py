@@ -1,15 +1,10 @@
 import os
-import ast
 from pprint import pprint
 from argparse import ArgumentParser
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from common import SaveMethod, get_save_func, load_report_or
 
-# cycles_filepath = os.path.abspath("speed_simulation.txt")
-
-generate_pgf = False
-parse_data = False
 
 def parse_times(times_filepath: str):
     # state = "looking_for_cycles"
@@ -51,21 +46,9 @@ inference = {
 }
 
 
-
-if generate_pgf:
-    matplotlib.use("pgf")
-    matplotlib.rcParams.update(
-        {
-            "pgf.texsystem": "pdflatex",
-            "font.family": "serif",
-            "font.size": 7,
-            "text.usetex": True,
-            "pgf.rcfonts": False,
-        }
-    )
-
-
-def main():
+def main(report_filepath: str, save_method: SaveMethod, output_dir: str):
+    # TODO: load report from report file
+    
     versions = list(inference.keys())
     times = list(inference.values())
 
@@ -112,19 +95,17 @@ def main():
             weight="bold",
         )
 
-    if generate_pgf:
-        # plt.savefig("cycle_bars_evolution.pgf")
-        plt.savefig("inference_time.pgf")
-    else:
-        plt.show()
+    # Display the plot
+    os.makedirs(output_dir, exist_ok=True)
+    get_save_func(save_method)(output_dir + "/inference_time")
 
 
 if __name__ == "__main__":
-    if parse_data:
-        parser = ArgumentParser()
-        parser.add_argument("--input", "-i", required=True)
-        args = parser.parse_args()
+    parser = ArgumentParser()
+    parser.add_argument("--report", "-r", required=False)
+    parser.add_argument("--output_dir", "-o", default=".")
+    parser.add_argument("--save_method", "-m", default="show", help="Supported: [show, png, pgf]")
+    args = parser.parse_args()
 
-        parse_times(args.input)
-    else:
-        main()
+    save_method = SaveMethod.from_str(args.save_method)
+    main(args.report, save_method, args.output_dir)

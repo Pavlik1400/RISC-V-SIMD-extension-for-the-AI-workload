@@ -1,58 +1,12 @@
 import os
-from pprint import pprint
+from typing import Dict
 import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib
-
-power_reports_dir = "power/"
-
-# design_to_power = {}
-
-# for fname in os.listdir(power_reports_dir):
-#     report_path = power_reports_dir + fname
-
-#     for line in open(report_path, 'r'):
-#         line = line.strip()
-#         if "Total On-Chip Power (W)" not in line:
-#             continue
-
-#         power = float(line.split("|")[2].strip())
-#         design_name = fname.replace(".txt", "")
-#         design_to_power[design_name] = power
-
-# pprint(design_to_power)
-
-design_to_power = {
-    "No CFU": 0.428,
-    "V4.0": 0.443,
-    "V5.0": 0.461,
-    "V5.1": 0.462,
-    "V6.1": 0.571,
-    "V7.0": 0.592,
-    "V8.0\nx1": 0.429,
-    "V8.0\nx2": 0.428,
-    "V8.0\nx4": 0.431,
-    "V8.0\nx8": 0.441,
-    "V8.0\nx16": 0.444,
-    "V8.0\nx24": 0.477,
-    "V8.0\nx32": 0.478,
-}
+from common import SaveMethod, get_save_func, load_report_or
+from argparse import ArgumentParser
 
 
-generate_pgf = True
-
-if generate_pgf:
-    matplotlib.use("pgf")
-    matplotlib.rcParams.update({
-        "pgf.texsystem": "pdflatex",
-        'font.family': 'serif',
-        'font.size': 7,
-        'text.usetex': True,
-        'pgf.rcfonts': False,
-    })
-
-
-def main():
+def main(report_filepath: str, save_method: SaveMethod, output_dir: str):
+    design_to_power: Dict = load_report_or(report_filepath, {})
     versions = list(design_to_power.keys())
     powers = list(design_to_power.values())
 
@@ -97,12 +51,17 @@ def main():
             weight="bold",
         )
 
-    if generate_pgf:
-        # plt.savefig("cycle_bars_evolution.pgf")
-        plt.savefig("power_consumption.pgf")
-    else:
-        plt.show()
+    # Display the plot
+    os.makedirs(output_dir, exist_ok=True)
+    get_save_func(save_method)(output_dir + "/power_consumption")
 
 
 if __name__ == "__main__":
-    main()
+    parser = ArgumentParser()
+    parser.add_argument("--report", "-r", required=True)
+    parser.add_argument("--output_dir", "-o", default=".")
+    parser.add_argument("--save_method", "-m", default="show", help="Supported: [show, png, pgf]")
+    args = parser.parse_args()
+
+    save_method = SaveMethod.from_str(args.save_method)
+    main(args.report, save_method, args.output_dir)
