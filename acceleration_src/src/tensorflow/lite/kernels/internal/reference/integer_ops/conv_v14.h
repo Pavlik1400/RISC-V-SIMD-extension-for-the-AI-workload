@@ -184,6 +184,11 @@ inline void ConvPerChannel(const ConvParams& params,
       }
 
       int32_t acc       = cfu_op0(CFU_READ_ACCUMULATOR, 0, 0);
+      static int i = 0;
+      if (i < 32) {
+        printf("i: %d, acc: %ld\n", i, acc);
+        ++i;
+      }
       int addr          = out_x * output_depth + out_channel;
       output_data[addr] = static_cast<int8_t>(acc);
 
