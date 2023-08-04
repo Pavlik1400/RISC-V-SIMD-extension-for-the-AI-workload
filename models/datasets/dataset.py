@@ -29,8 +29,10 @@ class Dataset(ABC):
         raise TypeError(f"dump argument has bad type: {type(how_or_where)}")
 
     def unload(self, *args, **kwargs):
-        del self._data
-        del self._labels
+        if self._data is not None:
+            del self._data
+        if self._labels is not None:
+            del self._labels
 
     def get_labels(self, *args, **kwargs) -> np.ndarray:
         if self._labels is None:

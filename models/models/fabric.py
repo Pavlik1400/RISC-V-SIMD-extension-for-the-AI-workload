@@ -8,7 +8,7 @@ from models.encoder_transformer.encoder_transformer_1d_v1 import (
     make_encoder_transformer_1d_v1 as __make_encoder_transformer_1d_v1,
 )
 from enum import Enum
-
+from keras.models import Model
 
 class ModelName(Enum):
     CNN_1D_V010 = (0,)
@@ -23,7 +23,7 @@ __models = {
 }
 
 
-def make_sigmod_model(name: str, config: Any):
+def make_sigmod_model(name: str, config: Any) -> Model:
     if name not in __models:
         raise ValueError(f"Unsupported model: {name}")
     return __models[name](config)
