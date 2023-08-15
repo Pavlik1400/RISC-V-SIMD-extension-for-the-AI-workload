@@ -1,3 +1,4 @@
+models/experiments/*_results/
 # Prerequisites
 *.d
 

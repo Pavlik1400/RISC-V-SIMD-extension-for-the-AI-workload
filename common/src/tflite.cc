@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SKIP_TFLM
+#ifndef  SKIP_TFLM
 
 #include "tflite.h"
 
@@ -21,13 +21,13 @@
 #include "perf.h"
 #include "playground_util/random.h"
 #include "proj_tflite.h"
-#include "tensorflow/lite/core/api/error_reporter_macro.h"
 #include "tensorflow/lite/micro/all_ops_resolver.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
 #include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
 #include "tensorflow/lite/micro/micro_profiler.h"
 #include "tensorflow/lite/schema/schema_generated.h"
+#include "tensorflow/lite/core/api/error_reporter_macro.h"
 
 #include "tflite_unit_tests.h"
 
@@ -60,10 +60,10 @@ class ProgressProfiler : public tflite::MicroProfiler {
 };
 
 tflite::ErrorReporter* error_reporter = nullptr;
-tflite::MicroOpResolver* op_resolver  = nullptr;
-tflite::MicroProfiler* profiler       = nullptr;
+tflite::MicroOpResolver* op_resolver = nullptr;
+tflite::MicroProfiler* profiler = nullptr;
 
-const tflite::Model* model            = nullptr;
+const tflite::Model* model = nullptr;
 tflite::INTERPRETER_TYPE* interpreter = nullptr;
 
 // C++ 11 does not have a constexpr std::max.
@@ -82,7 +82,10 @@ constexpr T const& const_max(const T& x, const T& y, const Args&... rest) {
 constexpr int kTensorArenaSize = const_max<int>(
 
 // My_models_anchor
-#ifdef INCLUDE_MODEL_CNN_1D_V012_RADIOML
+#ifdef INCLUDE_MODEL_CNN_1D_V012_SMALL_RADIO_ML18
+    200000,
+#endif
+#ifdef INCLUDE_MODEL_CNN_1D_V012_SMALL_RADIO_ML
     200000,
 #endif
 #ifdef INCLUDE_MODEL_SIMC_3_MIXED_V2_NO_QUANT
@@ -137,7 +140,7 @@ static uint8_t tensor_arena[kTensorArenaSize];
 #endif
 }  // anonymous namespace
 
-uint8_t* tflite_tensor_arena = tensor_arena;
+uint8_t *tflite_tensor_arena = tensor_arena;
 
 static void tflite_init() {
   static bool initialized = false;
@@ -165,7 +168,8 @@ static void tflite_init() {
   profiler = &micro_profiler;
 }
 
-void tflite_load_model(const unsigned char* model_data, unsigned int model_length) {
+void tflite_load_model(const unsigned char* model_data,
+                       unsigned int model_length) {
   tflite_init();
   tflite_preload(model_data, model_length);
   if (interpreter) {
@@ -179,9 +183,11 @@ void tflite_load_model(const unsigned char* model_data, unsigned int model_lengt
 
   // Build an interpreter to run the model with.
   // NOLINTNEXTLINE(runtime-global-variables)
-  alignas(tflite::INTERPRETER_TYPE) static unsigned char buf[sizeof(tflite::INTERPRETER_TYPE)];
-  interpreter = new (buf) tflite::INTERPRETER_TYPE(model, *op_resolver, tensor_arena,
-                                                   kTensorArenaSize, nullptr, profiler);
+  alignas(tflite::INTERPRETER_TYPE) static unsigned char
+      buf[sizeof(tflite::INTERPRETER_TYPE)];
+  interpreter = new (buf)
+      tflite::INTERPRETER_TYPE(model, *op_resolver, tensor_arena,
+                               kTensorArenaSize, nullptr, profiler);
 
   // Allocate memory from the tensor_arena for the model's tensors.
   TfLiteStatus allocate_status = interpreter->AllocateTensors();
@@ -196,7 +202,7 @@ void tflite_load_model(const unsigned char* model_data, unsigned int model_lengt
 
   // Get information about the memory area to use for the model's input.
   auto input = interpreter->input(0);
-  auto dims  = input->dims;
+  auto dims = input->dims;
   printf("Input: %d bytes, %d dims:", input->bytes, dims->size);
   for (int ii = 0; ii < dims->size; ++ii) {
     printf(" %d", dims->data[ii]);
@@ -239,7 +245,7 @@ void tflite_set_input_float(const float* data) {
 }
 
 void tflite_randomize_input(int64_t seed) {
-  int64_t r  = seed;
+  int64_t r = seed;
   auto input = interpreter->input(0);
   for (size_t i = 0; i < input->bytes; i++) {
     input->data.int8[i] = static_cast<int8_t>(next_pseudo_random(&r));
@@ -248,12 +254,12 @@ void tflite_randomize_input(int64_t seed) {
 }
 
 void tflite_set_grid_input(void) {
-  auto input    = interpreter->input(0);
+  auto input = interpreter->input(0);
   size_t height = input->dims->data[1];
-  size_t width  = input->dims->data[2];
+  size_t width = input->dims->data[2];
   for (size_t y = 0; y < height; y++) {
     for (size_t x = 0; x < width; x++) {
-      int8_t val                      = (y & 0x20) & (x & 0x20) ? -128 : 127;
+      int8_t val = (y & 0x20) & (x & 0x20) ? -128 : 127;
       input->data.int8[x + y * width] = val;
     }
   }
@@ -276,20 +282,16 @@ int tflite_output_zero_point() {
   return interpreter->output(0)->params.zero_point;
 }
 
-int8_t* tflite_get_output() {
-  return interpreter->output(0)->data.int8;
-}
+int8_t* tflite_get_output() { return interpreter->output(0)->data.int8; }
 
-float* tflite_get_output_float() {
-  return interpreter->output(0)->data.f;
-}
+float* tflite_get_output_float() { return interpreter->output(0)->data.f; }
 
 void tflite_classify() {
   // Run the model on this input and make sure it succeeds.
   profiler->ClearEvents();
   perf_reset_all_counters();
 
-// perf_set_mcycle is a no-op for some boards, start and end used instead.
+  // perf_set_mcycle is a no-op for some boards, start and end used instead.
 #ifdef ADD_MEASURE_TIME_ANCHORS
   printf("//measure_time_anchor_start\n");
 #endif
@@ -310,8 +312,6 @@ void tflite_classify() {
   printf(" cycles total\n");
 }
 
-int8_t* get_input() {
-  return interpreter->input(0)->data.int8;
-}
+int8_t* get_input() { return interpreter->input(0)->data.int8; }
 
-#endif  // SKIP_TFLM
+#endif // SKIP_TFLM
