@@ -31,8 +31,10 @@ def to_tf_lite(
         raise ValueError(f"Representative ds is None")
 
     def representative_dataset():
+        # return [representative_dataset]
         for i in range(len(representative_ds)):
             yield [np.expand_dims(representative_ds[i], axis=0)]
+            # yield [representative_ds[i]]
 
     converter.optimizations = optimizations
     converter.target_spec.supported_ops = supported_ops

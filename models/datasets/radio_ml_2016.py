@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional
 
 from datasets.dataset import SignalModulationDataset
+from sklearn.preprocessing import Normalizer
 from tools.utils import is_str, some_are_nones
 import numpy as np
 import pickle
@@ -45,11 +46,19 @@ class RadioML2016(SignalModulationDataset):
 
     class Detail:
         @staticmethod
-        def _postprocess_radioml_v1(raw_ds: Dict, to_1024: bool, transpose: bool, minimum_snr: int):
+        def _postprocess_radioml_v1(
+            raw_ds: Dict,
+            to_1024: bool,
+            transpose: bool,
+            minimum_snr: int,
+            normalize: bool,
+            expand2d: bool,
+        ):
             ds_keys = [k for k in raw_ds.keys() if k[1] >= minimum_snr]
             classes = list(set(map(lambda v: v[0], ds_keys)))
             classes.sort()  # make sure order is always the same
             class_name_to_class_idx = {name: idx for idx, name in enumerate(classes)}
+            print(class_name_to_class_idx)
 
             frames_per_modulation = raw_ds[ds_keys[0]].shape[0]  # 1000
 
@@ -59,18 +68,15 @@ class RadioML2016(SignalModulationDataset):
                 ds_size //= 8
 
             if transpose:
-                data = (
-                    np.empty((ds_size, 1024, 2)) if to_1024 else np.empty((ds_size, 128, 2))
-                )
+                data = np.empty((ds_size, 1024, 2)) if to_1024 else np.empty((ds_size, 128, 2))
             else:
-                data = (
-                    np.empty((ds_size, 2, 1024)) if to_1024 else np.empty((ds_size, 2, 128))
-                )
+                data = np.empty((ds_size, 2, 1024)) if to_1024 else np.empty((ds_size, 2, 128))
 
             labels = np.empty((ds_size,), dtype=np.uint8)
             snrs = np.empty_like(labels, dtype=np.int8)
 
             cur_idx = 0
+            prev_idx = 0
             for (class_name, snr), raw_data in raw_ds.items():
                 if snr < minimum_snr:
                     continue
@@ -101,6 +107,32 @@ class RadioML2016(SignalModulationDataset):
                         labels[cur_idx] = class_name_to_class_idx[class_name]
                         snrs[cur_idx] = snr
                         cur_idx += 1
+
+                # TODO: figure out normalization
+                if normalize:
+                    assert transpose
+                    # data[prev_idx:cur_idx, :, 0] = Normalizer(copy=False).fit_transform(data[prev_idx:cur_idx, :, 0])
+                    # data[prev_idx:cur_idx, :, 1] = Normalizer(copy=False).fit_transform(data[prev_idx:cur_idx, :, 1])
+                    data[prev_idx:cur_idx, :, 0] -= data[prev_idx:cur_idx, :, 0].min()
+                    data[prev_idx:cur_idx, :, 0] /= np.max(data[prev_idx:cur_idx, :, 0])
+
+                    data[prev_idx:cur_idx, :, 1] -= data[prev_idx:cur_idx, :, 1].min()
+                    data[prev_idx:cur_idx, :, 1] /= np.max(data[prev_idx:cur_idx, :, 1])
+                prev_idx = cur_idx
+
+            # if normalize:
+            #     if transpose:
+            #         data[:, :, 0] = (data[:, :, 0] - np.mean(data[:, :, 0])) / np.std(data[:, :, 0])
+            #         data[:, :, 1] = (data[:, :, 1] - np.mean(data[:, :, 1])) / np.std(data[:, :, 1])
+            #         # data[:, :, 0] = Normalizer(copy=False).fit_transform(data[:, :, 0])  # I samples
+            #         # data[:, :, 1] = Normalizer(copy=False).fit_transform(data[:, :, 1])  # Q samples
+            #     else:
+            #         raise NotImplementedError
+            #         data[:, 0, :] = Normalizer(copy=False).fit_transform(data[:, 0, :])  # I samples
+            #         data[:, 1, :] = Normalizer(copy=False).fit_transform(data[:, 1, :])  # Q samples
+
+            if expand2d:
+                data = np.expand_dims(data, axis=1)
             return labels, data, classes, snrs
 
         # Returns {(modulation, snr): frames}               if not postprocess
@@ -112,6 +144,8 @@ class RadioML2016(SignalModulationDataset):
             to_1024=False,
             transpose=True,
             minimum_snr: Optional[int] = None,
+            normalize=False,
+            expand2d=False
         ):
             with open(ds_path, "rb") as crmrn_file:
                 raw_ds = pickle.load(crmrn_file, encoding="bytes")
@@ -126,5 +160,5 @@ class RadioML2016(SignalModulationDataset):
                 minimum_snr = -10000
 
             return RadioML2016.Detail._postprocess_radioml_v1(
-                raw_ds, to_1024, transpose, minimum_snr
+                raw_ds, to_1024, transpose, minimum_snr, normalize, expand2d
             )

@@ -33,7 +33,8 @@ def metric_evaluation(
     preds = predict_func(model, data, *predict_args, **predict_kwargs)
     print(f"Preds shape: {preds.shape}")
 
-    pred_labels = np.argmax(preds, axis=1)
+    # pred_labels = np.argmax(preds, axis=1)
+    pred_labels = np.argmax(preds, axis=1) if len(preds.shape) == 2 else preds
 
     cls_to_acc = {"Overall": metric(labels, pred_labels)}
 
@@ -46,7 +47,7 @@ def metric_evaluation(
         cls_to_acc[cl] = accuracy_score(cur_true_labels, cur_pred_labels)
         verbose and print(f"{cl} test accuracy: {cls_to_acc[cl]}")
 
-    cm = confusion_matrix(y_true=labels, y_pred=pred_labels)
+    cm = confusion_matrix(y_true=labels, y_pred=pred_labels, labels=range(len(modulations)))
     verbose and print(f"Confusion matrix:\n{cm}")
     df_cm = pd.DataFrame(cm, index=modulations, columns=modulations)
     if verbose:
@@ -78,7 +79,8 @@ def snr_to_metric_evaluation(
 
     snr_to_acc = {}
     # for snr in range(min(snrs), max(snrs) + 2, 2):
-    for snr in sorted(np.unique(snrs)):
+    # for snr in sorted(np.unique(snrs)):
+    for snr in sorted(np.unique(snrs), reverse=True):
         cur_indecies = np.where(snrs == snr)[0]
         cur_data = data[cur_indecies]
         cur_labels = labels[cur_indecies]
