@@ -26,7 +26,7 @@ inline void ConvPerChannel(const ConvParams& params,
   const int pad_width = 3;
 
   // const int32_t output_offset         = -128;
-  const int32_t output_offset      = params.output_offset;
+  const int32_t output_offset         = params.output_offset;
   const int32_t output_activation_min = -128;
   const int32_t output_activation_max = 127;
 
@@ -41,6 +41,7 @@ inline void ConvPerChannel(const ConvParams& params,
   // kerne_shape = output_channels x 1 x 8 x input_channels
   // output_shaoe = 1 x 1 x output_width x output_channels
 
+  static int i = 0;
   // Original convolution code
   for (int out_x = 0; out_x < output_width; ++out_x) {
     const int in_x_origin = out_x - pad_width;
@@ -62,6 +63,9 @@ inline void ConvPerChannel(const ConvParams& params,
               filter_data[out_channel * (8 * input_depth) + filter_x * input_depth + in_channel];
 
           acc += filter_val * (input_val + input_offset);
+          if (out_channel == 0 && i == 125) {
+            printf("Acc += %ld * %ld + %ld\n", filter_val, input_val, input_offset);
+          }
         }
       }
       if (bias_data) {
@@ -70,10 +74,23 @@ inline void ConvPerChannel(const ConvParams& params,
       acc = multiply_by_quant_mult(acc, output_multiplier[out_channel], output_shift[out_channel]);
 
       acc += output_offset;
-      acc = std::max(acc, output_activation_min);
-      acc = std::min(acc, output_activation_max);
+      acc               = std::max(acc, output_activation_min);
+      acc               = std::min(acc, output_activation_max);
       int addr          = out_x * output_depth + out_channel;
       output_data[addr] = static_cast<int8_t>(acc);
+
+      if (out_channel == 0 && input_depth == 2) {
+        printf("i: %d, acc: %d\n", i, output_data[addr]);
+        ++i;
+      }
+      // if (out_channel == 0) {
+      //   if (i < 16) {
+      //     printf("i: %d, acc: %d\n", i, output_data[addr]);
+      //   } else {
+      //     exit(1);
+      //   }
+      //   ++i;
+      // }
     }
   }
 }

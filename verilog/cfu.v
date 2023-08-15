@@ -20,6 +20,7 @@
 `include "verilog_src/cfu_v14.sv"
 `include "verilog_src/cfu_v14_1.sv"
 `include "verilog_src/cfu_v15.sv"
+`include "verilog_src/cfu_v16.sv"
 
 
 module Cfu (

@@ -3,6 +3,7 @@
 
 #include "cfu_utils.h"
 #include "common.h"
+#include "perf.h"
 #include "tensorflow/lite/kernels/internal/common.h"
 #include "tensorflow/lite/kernels/internal/portable_tensor_utils.h"
 
@@ -43,10 +44,15 @@ inline void ConvPerChannel_aligned_4(const ConvParams& params,
   int write_at_once               = 4;
 
   // Set default values to input and filter buffers
+  // int cpy_cycles = 0;
+  // int job_cycles = 0;
+  // int before;
+  // before     = perf_get_mcycle();
   for (int i = 0; i < sum_at_once * 8; i += 4) {
     cfu_op0(CFU_WRITE_INPUT_BUFFER, i, min_input_offset4);
     cfu_op0(CFU_WRITE_FILTER_BUFFER, i, 0);
   }
+  // cpy_cycles += perf_get_mcycle() - before;
 
   // Write parameters to CFU
   cfu_op0(CFU_WRITE_INPUT_OFFSET, 0, input_offset);
@@ -66,6 +72,8 @@ inline void ConvPerChannel_aligned_4(const ConvParams& params,
     // Copy kernel
     int filter_size        = filter_width * input_depth;
     int filter_addr_offset = out_channel * filter_size;
+
+    // before = perf_get_mcycle();
     for (int kernel_addr = 0; kernel_addr < filter_size; kernel_addr += 4) {
       int addr             = filter_addr_offset + kernel_addr;
       int32_t filter_value = *reinterpret_cast<const int32_t*>(filter_data + addr);
@@ -91,33 +99,27 @@ inline void ConvPerChannel_aligned_4(const ConvParams& params,
 
       ++input_cur_x;
     }
+    // cpy_cycles += perf_get_mcycle() - before;
 
     // input depth == no async writing -> buffer size is 1 row smaller
     const int filter_x_mod = 9;
-    int start_input_x      = 0;
-    int cur_write_input_x  = 8;
+    int start_filter_x     = 0;
+    int cur_write_filter_x = 8;
 
     for (int out_x = 0; out_x < output_width; ++out_x) {
-      cfu_op0(CFU_WRITE_START_INPUT_X, 0, start_input_x);
+      cfu_op0(CFU_WRITE_START_FILTER_X, 0, start_filter_x);
 
-      // run full convolution on the first iteration
-      // cfu_op0(CFU_START_COMPUTATION, 0, 0);
+      // before = perf_get_mcycle();
+      cfu_op0(CFU_START_COMPUTATION, 0, 0);
+      // while (!cfu_op0(CFU_FINISHED, 0, 0)) {
+      // };
+      // job_cycles += perf_get_mcycle() - before;
 
-      if (out_x == 0) {
-        cfu_op0(CFU_START_COMPUTATION, 0, 0);
-      }
-      // Run only running window on all other iterations
-      else {
-        cfu_op0(CFU_START_RUNNING_WINDOW, 0, 0);
-      }
-
-      while (!cfu_op0(CFU_FINISHED, 0, 0)) {
-      };
-
+      // before = perf_get_mcycle();
       // copy input if this is not the last iteration
       if (out_x != (output_width - 1)) {
         for (int in_channel = 0; in_channel < input_depth; in_channel += write_at_once) {
-          int buffer_addr = cur_write_input_x * input_depth + in_channel;
+          int buffer_addr = cur_write_filter_x * input_depth + in_channel;
           int32_t value   = min_input_offset4;
           if (input_cur_x < input_width) {
             int input_addr = input_cur_x * input_depth + in_channel;
@@ -126,24 +128,22 @@ inline void ConvPerChannel_aligned_4(const ConvParams& params,
           cfu_op0(CFU_WRITE_INPUT_BUFFER, buffer_addr, value);
         }
       }
+      // cpy_cycles += perf_get_mcycle() - before;
 
-      // while (!cfu_op0(CFU_FINISHED, 0, 0)) {
-      // };
+      while (!cfu_op0(CFU_FINISHED, 0, 0)) {
+      };
 
       ++input_cur_x;
-      start_input_x     = (start_input_x + 1) % filter_x_mod;
-      cur_write_input_x = (cur_write_input_x + 1) % filter_x_mod;
+      start_filter_x     = (start_filter_x + 1) % filter_x_mod;
+      cur_write_filter_x = (cur_write_filter_x + 1) % filter_x_mod;
 
-      int32_t acc  = cfu_op0(CFU_READ_ACCUMULATOR, 0, 0);
-      static int i = 0;
-      if (i < 32) {
-        printf("i: %d, acc: %ld\n", i, acc);
-        ++i;
-      }
+      int32_t acc       = cfu_op0(CFU_READ_ACCUMULATOR, 0, 0);
       int addr          = out_x * output_depth + out_channel;
       output_data[addr] = static_cast<int8_t>(acc);
     }
   }
+  // printf("[align 4 layer] input_depth: %d, job_cycles: %d, cpy_cycles: %d\n", input_depth,
+  //        job_cycles, cpy_cycles);
 }
 
 inline void ConvPerChannel_aligned_2(const ConvParams& params,
@@ -180,10 +180,15 @@ inline void ConvPerChannel_aligned_2(const ConvParams& params,
   int32_t min_input_offset4                  = *reinterpret_cast<int32_t*>(min_input_offset_arr4);
 
   // Set default values to input and filter buffers
+  // int cpy_cycles = 0;
+  // int job_cycles = 0;
+  // int before;
+  // before = perf_get_mcycle();
   for (int i = 0; i < sum_at_once * 8; i += 4) {
     cfu_op0(CFU_WRITE_INPUT_BUFFER, i, min_input_offset4);
     cfu_op0(CFU_WRITE_FILTER_BUFFER, i, 0);
   }
+  // cpy_cycles += perf_get_mcycle() - before;
 
   // Write parameters to CFU
   cfu_op0(CFU_WRITE_OUTPUT_OFFSET, 0, output_offset);
@@ -206,6 +211,8 @@ inline void ConvPerChannel_aligned_2(const ConvParams& params,
     // Copy kernel
     int filter_size        = filter_width * input_depth;
     int filter_addr_offset = out_channel * filter_size;
+
+    // before = perf_get_mcycle();
     for (int kernel_addr = 0; kernel_addr < filter_size; kernel_addr += 2) {
       int addr = filter_addr_offset + kernel_addr;
 
@@ -235,17 +242,25 @@ inline void ConvPerChannel_aligned_2(const ConvParams& params,
 
       ++input_cur_x;
     }
+    // cpy_cycles += perf_get_mcycle() - before;
 
     // input depth == no async writing -> buffer size is 1 row smaller
     int filter_x_mod           = 8;
     int initial_start_filter_x = 0;
 
-    int start_input_x     = initial_start_filter_x;
-    int cur_write_input_x = (input_depth == 2) ? initial_start_filter_x : 8;
+    int start_filter_x     = initial_start_filter_x;
+    int cur_write_filter_x = (input_depth == 2) ? initial_start_filter_x : 8;
     for (int out_x = 0; out_x < output_width; ++out_x) {
-      cfu_op0(CFU_WRITE_START_INPUT_X, 0, start_input_x);
+      cfu_op0(CFU_WRITE_START_FILTER_X, 0, start_filter_x);
+
+      // before = perf_get_mcycle();
       cfu_op0(CFU_START_COMPUTATION, 0, 0);
 
+      // while (!cfu_op0(CFU_FINISHED, 0, 0)) {
+      // };
+      // job_cycles += perf_get_mcycle() - before;
+
+      // before = perf_get_mcycle();
       // Copy input
       if (out_x == (output_width - 1)) {
         while (!cfu_op0(CFU_FINISHED, 0, 0)) {
@@ -257,8 +272,8 @@ inline void ConvPerChannel_aligned_2(const ConvParams& params,
       }
 
       for (int in_channel = 0; in_channel < input_depth; in_channel += write_at_once) {
-        int buffer_addr = start_input_x * input_depth + in_channel;
-        // int buffer_addr = start_input_x * input_depth + in_channel * 2;
+        int buffer_addr = start_filter_x * input_depth + in_channel;
+        // int buffer_addr = start_filter_x * input_depth + in_channel * 2;
 
         int32_t value         = min_input_offset4;
         int16_t* value_16_ptr = reinterpret_cast<int16_t*>(&value);
@@ -269,6 +284,8 @@ inline void ConvPerChannel_aligned_2(const ConvParams& params,
         }
         cfu_op0(CFU_WRITE_INPUT_BUFFER, buffer_addr * buffer_addr_multiplier, value);
       }
+      // cpy_cycles += perf_get_mcycle() - before;
+
       while (!cfu_op0(CFU_FINISHED, 0, 0)) {
       };
 
@@ -277,10 +294,12 @@ inline void ConvPerChannel_aligned_2(const ConvParams& params,
       output_data[addr] = static_cast<int8_t>(acc);
 
       ++input_cur_x;
-      start_input_x     = (start_input_x + 1) % filter_x_mod;
-      cur_write_input_x = (cur_write_input_x + 1) % filter_x_mod;
+      start_filter_x     = (start_filter_x + 1) % filter_x_mod;
+      cur_write_filter_x = (cur_write_filter_x + 1) % filter_x_mod;
     }
   }
+  // printf("[align 2 layer] input_depth: %d, job_cycles: %d, cpy_cycles: %d\n", input_depth,
+  //        job_cycles, cpy_cycles);
 }
 
 inline void ConvPerChannel(const ConvParams& params,
