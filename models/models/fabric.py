@@ -2,6 +2,7 @@ from typing import Any, Dict
 from models.cnn.cnn_1d_v010 import make_cnn_1d_v010 as __make_cnn_1d_v010
 from models.cnn.cnn_1d_v012 import make_cnn_1d_v012 as __make_cnn_1d_v012
 from models.cnn.cnn_1d_v013 import make_cnn_1d_v013 as __make_cnn_1d_v013
+from models.cnn.cnn_1d_v014 import make_cnn_1d_v014 as __make_cnn_1d_v014
 from models.cnn.cnn_1d_v01x_common import Convolution01xConfiguration
 from models.encoder_transformer.encoder_transformer_1d_v1 import (
     EncoderTransformerConfiguration,
@@ -16,6 +17,7 @@ class ModelName(Enum):
     CNN_1D_V012 = 1
     ENCODER_TRANSFORMER_1D_V010 = 2
     CNN_1D_V013 = 3
+    CNN_1D_V014 = 4
 
 
 __models = {
@@ -23,6 +25,7 @@ __models = {
     ModelName.CNN_1D_V012: __make_cnn_1d_v012,
     ModelName.ENCODER_TRANSFORMER_1D_V010: __make_encoder_transformer_1d_v1,
     ModelName.CNN_1D_V013: __make_cnn_1d_v013,
+    ModelName.CNN_1D_V014: __make_cnn_1d_v014,
 }
 
 

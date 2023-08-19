@@ -79,8 +79,8 @@ def snr_to_metric_evaluation(
 
     snr_to_acc = {}
     # for snr in range(min(snrs), max(snrs) + 2, 2):
-    # for snr in sorted(np.unique(snrs)):
-    for snr in sorted(np.unique(snrs), reverse=True):
+    for snr in sorted(np.unique(snrs)):
+    # for snr in sorted(np.unique(snrs), reverse=True):
         cur_indecies = np.where(snrs == snr)[0]
         cur_data = data[cur_indecies]
         cur_labels = labels[cur_indecies]

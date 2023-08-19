@@ -6,10 +6,11 @@ for quantization aware training
 """
 import tensorflow as tf
 from typing import Union
-from tensorflow.keras import layers
+from keras import layers
 from tensorflow import keras
 from models.models_common import make_dense_relu_layer as __make_dense_relu_layer
 from models.cnn.cnn_1d_v01x_common import Convolution01xConfiguration
+from models.layers.custom_batch_norm import CustomBatchNorm
 
 
 def _make_convolutional_layer(
@@ -26,17 +27,22 @@ def _make_convolutional_layer(
     """
     cnn = layers.Conv2D(
         output_channels,
-        kernel_size,
+        (1, kernel_size),
         padding=padding,
         name=f"CNN{idx}_",
     )(inp)
     
     # Important Note: tfmot supports batch norm only immediately after convolution
-    batch_norm = layers.BatchNormalization(name=f"BN{idx}_")(cnn)
-
+    # batch_norm = CustomBatchNorm(name=f"BN{idx}_")(cnn)
+    # batch_norm = layers.BatchNormalization(name=f"BN{idx}_")(cnn)
+    
+    # max_pool = layers.MaxPool1D(
+    #     pool_size=max_pool_size, strides=max_pool_stride, name=f"MAX_POOL_{idx}_"
+    # )(batch_norm)
+    
     max_pool = layers.MaxPool2D(
         pool_size=(1, max_pool_size), strides=(1, max_pool_stride), name=f"MAX_POOL_{idx}_"
-    )(batch_norm)
+    )(cnn)
 
     relu = layers.ReLU(name=f"CNN_REL{idx}_")(max_pool)
     return relu
@@ -47,6 +53,7 @@ def make_cnn_1d_v013(
     *args,
     **kwargs,
 ):
+    print("Test 3")
     InputLayer = keras.Input(shape=cnn_conf.input_shape)
     assert (
         len(cnn_conf.output_channels)
@@ -74,6 +81,7 @@ def make_cnn_1d_v013(
         )
 
     cur_layer = layers.AveragePooling2D(pool_size=(1, cnn_conf.avg_size), name="AVG1_")(cur_layer)
+    # cur_layer = layers.AveragePooling1D(pool_size=cnn_conf.avg_size, name="AVG1_")(cur_layer)
     cur_layer = layers.Flatten(name="FLT1_")(cur_layer)
 
     for i in range(N_DNNS):

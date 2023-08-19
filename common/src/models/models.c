@@ -30,7 +30,7 @@
 #include "models/pdti8/pdti8.h"
 
 // My models include anchor
-#include "models/cnn_1d_v012_small_radio_ml18/cnn_1d_v012_small_radio_ml18.h"
+#include "models/cnn_1d_v012_small_radio_ml16b_q_aware/cnn_1d_v012_small_radio_ml16b_q_aware.h"
 #include "models/cnn_1d_v012_small_radio_ml/cnn_1d_v012_small_radio_ml.h"
 #include "models/sine/sine.h"
 #include "models/simc_3_MIXED_v2/simc_3_MIXED_v2.h"
@@ -49,8 +49,8 @@ static struct Menu MENU = {
     {
 
 // My_models_anchor
-#if defined(INCLUDE_MODEL_CNN_1D_V012_SMALL_RADIO_ML18) || defined(INCLUDE_ALL_TFLM_EXAMPLES)
-        MENU_ITEM(AUTO_INC_CHAR, "cnn_1d_v012_small_radio_ml18", cnn_1d_v012_small_radio_ml18_menu),
+#if defined(INCLUDE_MODEL_CNN_1D_V012_SMALL_RADIO_ML16B_Q_AWARE) || defined(INCLUDE_ALL_TFLM_EXAMPLES)
+        MENU_ITEM(AUTO_INC_CHAR, "cnn_1d_v012_small_radio_ml16b_q_aware", cnn_1d_v012_small_radio_ml16b_q_aware_menu),
 #endif
 #if defined(INCLUDE_MODEL_CNN_1D_V012_SMALL_RADIO_ML) || defined(INCLUDE_ALL_TFLM_EXAMPLES)
         MENU_ITEM(AUTO_INC_CHAR, "cnn_1d_v012_small_radio_ml", cnn_1d_v012_small_radio_ml_menu),
