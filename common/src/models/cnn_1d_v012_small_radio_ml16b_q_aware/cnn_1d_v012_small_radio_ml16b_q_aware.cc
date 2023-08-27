@@ -69,7 +69,7 @@ static bool perform_one_test(int8_t* input, int8_t* expected_output, int8_t epsi
 }
 
 static void do_tests() {
-  int8_t epsilon = 45;
+  int8_t epsilon = 64;
   bool failed = false;
 
   

@@ -18,5 +18,5 @@ def save_update_report(report_filepath: str, key: str, value: Any):
 
     with open(report_filepath, "w") as res_file:
         report.update({key: value})
-        print(f"Add experiment '{key}' to result file '{value}'")
+        print(f"Add experiment '{key}' to result file '{report_filepath}'")
         json.dump(report, res_file, indent=4)

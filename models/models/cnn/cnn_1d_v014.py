@@ -1,5 +1,5 @@
 """
-Differs from 1.3 by Relu6
+Differs from 1.3 by using batch norm
 """
 import tensorflow as tf
 from typing import Union
@@ -8,14 +8,6 @@ from tensorflow import keras
 from models.models_common import make_dense_relu_layer as __make_dense_relu_layer
 from models.cnn.cnn_1d_v01x_common import Convolution01xConfiguration
 from models.layers.custom_batch_norm import CustomBatchNorm
-
-def _make_dense_relu6_layer(inp: layers.Layer, dense_size: int, idx=0):
-    """
-    Dense -> Relu
-    """
-    dense = layers.Dense(dense_size, name=f"FC{idx}_")(inp)
-    relu = layers.ReLU(6, name=f"FC_RELU{idx}_")(dense)
-    return relu
 
 
 def _make_convolutional_layer(
@@ -36,20 +28,20 @@ def _make_convolutional_layer(
         padding=padding,
         name=f"CNN{idx}_",
     )(inp)
-    
+
     # Important Note: tfmot supports batch norm only immediately after convolution
     # batch_norm = CustomBatchNorm(name=f"BN{idx}_")(cnn)
-    # batch_norm = layers.BatchNormalization(name=f"BN{idx}_")(cnn)
-    
-    # max_pool = layers.MaxPool1D(
-    #     pool_size=max_pool_size, strides=max_pool_stride, name=f"MAX_POOL_{idx}_"
-    # )(batch_norm)
-    
+    batch_norm = layers.BatchNormalization(name=f"BN{idx}_")(cnn)
+
     max_pool = layers.MaxPool2D(
         pool_size=(1, max_pool_size), strides=(1, max_pool_stride), name=f"MAX_POOL_{idx}_"
-    )(cnn)
+    )(batch_norm)
 
-    relu = layers.ReLU(6, name=f"CNN_REL{idx}_")(max_pool)
+    # max_pool = layers.MaxPool2D(
+    #     pool_size=(1, max_pool_size), strides=(1, max_pool_stride), name=f"MAX_POOL_{idx}_"
+    # )(cnn)
+
+    relu = layers.ReLU(name=f"CNN_REL{idx}_")(max_pool)
     return relu
 
 
@@ -89,7 +81,7 @@ def make_cnn_1d_v014(
     cur_layer = layers.Flatten(name="FLT1_")(cur_layer)
 
     for i in range(N_DNNS):
-        cur_layer = _make_dense_relu6_layer(cur_layer, cnn_conf.dense_sizes[i], idx=i)
+        cur_layer = __make_dense_relu_layer(cur_layer, cnn_conf.dense_sizes[i], idx=i)
 
     cur_layer = layers.Dense(cnn_conf.n_classes, name=f"FC_{N_DNNS+1}_")(cur_layer)
     SoftMax = layers.Softmax()(cur_layer)

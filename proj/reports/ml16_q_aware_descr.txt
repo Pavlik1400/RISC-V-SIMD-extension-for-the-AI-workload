@@ -1,0 +1,8 @@
+ORIG - Original quantized layers
+SIMPL - Simplified quantized layers
+CFU_V1 - CFU_V4 in thesis and CFU_V9 in a code 
+CFU_V2 - CFU_V5 in thesis and CFU_V11.2 in a code
+CFU_V3 - CFU_V6 in thesis and CFU_V12.2 in a code
+CFU_V4 - CFU_V7 in thesis and CFU_V13.2 in a code
+CFU_V5 - CFU_V8 in thesis and CFU_V14 in a code
+CFU_V6 - none in thesis and CFU_V16 in a code

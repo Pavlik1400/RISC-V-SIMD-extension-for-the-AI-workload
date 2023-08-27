@@ -53,7 +53,6 @@ def make_cnn_1d_v013(
     *args,
     **kwargs,
 ):
-    print("Test 3")
     InputLayer = keras.Input(shape=cnn_conf.input_shape)
     assert (
         len(cnn_conf.output_channels)

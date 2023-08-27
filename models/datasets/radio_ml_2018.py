@@ -44,6 +44,9 @@ class RadioML2018(SignalModulationDataset):
         self._labels = np.argmax(self._ds_file[self._groups[self.Detail.LABELS_IDX]], axis=1)
         # self._labels = self._ds_file[self._groups[self.Detail.LABELS_IDX]][()]
         self._modulations = self.Detail.load_classes(classes)
+        self._expand2d = False
+        if "expand2d" in kwargs:
+            self._expand2d = kwargs["expand2d"]
 
     def get_snrs(self, *args, **kwargs) -> np.ndarray:
         assert self._snrs is not None, "Can't get snrs: dataset is not loaded"
@@ -54,7 +57,10 @@ class RadioML2018(SignalModulationDataset):
         return self._modulations
 
     def get_data_element(self, idx: int):
-        return self._ds_file[self._groups[self.Detail.DATA_IDX]][idx]
+        data_element = self._ds_file[self._groups[self.Detail.DATA_IDX]][idx]
+        if self._expand2d:
+            return np.expand_dims(data_element, 0)
+        return data_element
 
     def dump(self, how_or_where, *args, **kwargs):
         raise NotImplementedError("Dataset doesn't fit in memory, 'dump' impossible to implement")
@@ -63,7 +69,7 @@ class RadioML2018(SignalModulationDataset):
         raise NotImplementedError(
             "Dataset doesn't fit in memory, 'get_data' impossible to implement"
         )
-    
+
     def get_dim(self):
         return (1024, 2)
 
@@ -80,7 +86,7 @@ class RadioML2018(SignalModulationDataset):
         )
 
     def to_keras_generator(self, list_IDs: np.ndarray, batch_size=32, shuffle=True):
-        return _RadioML2018Generator(list_IDs, self, batch_size, shuffle)
+        return _RadioML2018Generator(list_IDs, self, batch_size, self._expand2d, shuffle)
 
     class Detail:
         @staticmethod
@@ -99,7 +105,14 @@ class RadioML2018(SignalModulationDataset):
 
 
 class _RadioML2018Generator(keras.utils.Sequence):
-    def __init__(self, list_IDs: np.ndarray, RML2018_ds: RadioML2018, batch_size=32, shuffle=True):
+    def __init__(
+        self,
+        list_IDs: np.ndarray,
+        RML2018_ds: RadioML2018,
+        batch_size=32,
+        expand2d=False,
+        shuffle=True,
+    ):
         "Initialization"
         self.batch_size = batch_size
         self.shuffle = shuffle
@@ -107,6 +120,7 @@ class _RadioML2018Generator(keras.utils.Sequence):
         self.list_IDs = list_IDs
         self.n_samples = len(self.list_IDs)
         self.indexes = None
+        self.expand2d = expand2d
         self.ds = RML2018_ds
         self.on_epoch_end()
 
@@ -137,14 +151,20 @@ class _RadioML2018Generator(keras.utils.Sequence):
     def __data_generation(self, list_IDs_temp):
         "Generates data containing batch_size samples"  # X : (n_samples, *dim, n_channels)
         # Initialization
-        X = np.empty((self.batch_size, *self.ds.get_dim()))
+        if not self.expand2d:
+            X = np.empty((self.batch_size, *self.ds.get_dim()))
+        else:
+            X = np.empty((self.batch_size, 1, *self.ds.get_dim()))
         # y = np.empty((self.batch_size, self.n_classes), dtype=int)
         y = np.empty((self.batch_size), dtype=int)
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i,] = self.ds.get_data_element(ID)
+            if not self.expand2d:
+                X[i] = self.ds.get_data_element(ID)
+            else:
+                X[i, 0] = self.ds.get_data_element(ID)
 
             # Store class
             y[i] = self.ds.get_labels()[ID]
