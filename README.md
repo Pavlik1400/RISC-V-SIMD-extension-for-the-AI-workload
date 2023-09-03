@@ -1,9 +1,9 @@
 # RISC-V SIMD extension for the AI workload
 
-This project is a fork of [CFU-Playground](https://github.com/google/CFU-Playground) framework, that allows AI workload running in TFLM acceleration with FPGA and CFU for RISC-V architecture 
+This project is a fork of [CFU-Playground](https://github.com/google/CFU-Playground) framework, that allows AI workload, running in [TFLM](https://github.com/tensorflow/tflite-micro), acceleration with FPGA and CFU for RISC-V architecture 
 
 ## Docs
-This project is implementation for [Deep learning AMR model inference acceleration with CFU for edge systems](todo: update link when published) and [bachelor's thesis](/docs/Bachelor_Thesis_Pavlo_Hilei.pdf).
+This project is implementation for Deep learning AMR model inference acceleration with CFU for edge systems and [bachelor's thesis](/docs/Bachelor_Thesis_Pavlo_Hilei.pdf).
 
 
 ## Description
