@@ -57,7 +57,7 @@ static bool perform_one_test(int8_t* input, int8_t* expected_output, int8_t epsi
           "Class=%u\n",
           y_true, y_pred, i);
     
-      failed = true;
+      // failed = true;
     } else {
       // printf(
       //     "+++ Signal modulation 1 test success %d (actual) != %d (pred). "

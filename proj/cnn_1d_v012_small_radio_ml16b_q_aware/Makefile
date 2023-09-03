@@ -24,7 +24,7 @@ DEFINES += NDEBUG
 # DEFINES += CONFIG_CPU_PERF_CSRS
 
 # Uncomment this line to skip individual profiling output (has minor effect on performance).
-DEFINES += NPROFILE
+#DEFINES += NPROFILE
 
 # Uncomment to include specified model in built binary
 # Models defines anchor
@@ -36,12 +36,16 @@ DEFINES += INCLUDE_MODEL_CNN_1D_V012_SMALL_RADIO_ML16B_Q_AWARE
 # Uncomment to include all TFLM examples (pdti8, micro_speech, magic_wand)
 #DEFINES += INCLUDE_ALL_TFLM_EXAMPLES
 
-#DEFINES += ADD_MEASURE_TIME_ANCHORS
+DEFINES += ADD_MEASURE_TIME_ANCHORS
 
 export EXTRA_LITEX_ARGS
 EXTRA_LITEX_ARGS += --variant=a7-100
 #EXTRA_LITEX_ARGS += --sys-clk-freq=30000000
-EXTRA_LITEX_ARGS += --sys-clk-freq=75000000
+#EXTRA_LITEX_ARGS += --sys-clk-freq=75000000
+#EXTRA_LITEX_ARGS += --sys-clk-freq=70000000
+#EXTRA_LITEX_ARGS += --sys-clk-freq=63000000
+EXTRA_LITEX_ARGS += --sys-clk-freq=60000000
+#EXTRA_LITEX_ARGS += --sys-clk-freq=80000000
 
 TARGET=digilent_arty
 # USE_SYMBIFLOW=1
@@ -52,6 +56,6 @@ BUILD_JOBS=16
 # DEFINES += DONUT_DEMO
 
 export LOAD_GLOBAL_SOURCES=1
-export CLEAN_LOCAL_SOURCES=1
+export CLEAN_LOCAL_SOURCES=0
 
 include ../proj.mk

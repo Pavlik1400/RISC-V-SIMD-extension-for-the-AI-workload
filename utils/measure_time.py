@@ -19,9 +19,10 @@ def read_serial(print_lines=True, n_measurements=-1):
             if "//measure_time_anchor_end" in line:
                 after = time.time()
                 t = after - before
+                measurements.append(t)
                 if print_lines:
                     print(f"\n\nMeasured execution time: {t}s\n")
-                measurements.append(t)
+                    print(measurements)
                 i += 1
                 if i == n_measurements:
                     measurements = np.array(measurements)

@@ -3,30 +3,26 @@ import os
 import tensorflow as tf
 import time
 import numpy as np
-from tools.deployment_tools import predict_tflite
-from tools.deployment_tools import to_tf_lite
+from deployment_tools import predict_tflite, to_tf_lite
+from datasets.fabric import make_sigmod_ds, DatasetName
+
 
 
 # tf.config.set_visible_devices([], 'GPU')
 
-model_cnn_path = "final_models_evaluation/CNN_mixed_v2_0-30_quant/experiment_0/model"
-model_encoder_path = "final_models_evaluation/encoder_mixed_v2_0-30_0/experiment_0/model/"
+model_cnn_path = "experiments/cnn_1d_v013_small_radio_ml16b_results/model_original"
+model_encoder_path = "experiments/enc_v3_small_radio_ml16b_normalized_results/model_original"
 
-# model_path = model_encoder_path
-model_path = model_cnn_path
-
-if model_path == model_cnn_path:
-    data = np.load("final_models_evaluation/data_mixed_V2_0_30_30k.npy")
-else:
-    data = np.squeeze(np.load("final_models_evaluation/data_mixed_V2_0_30_30k.npy"))
-
-print(">>>>>", data.shape)
-
-# model = tf.keras.models.load_model(model_path)
+model_path = model_encoder_path
+# model_path = model_cnn_path
 model = to_tf_lite(model_path)
 
-open(model_path + "_tf_lite_no_quant", "wb").write(model)
-# open(model_path, "wb").write(model)
+
+radioml2016b_path = "data/radioml_2016/RML2016.10b.dat"
+radioml_ds = make_sigmod_ds(DatasetName.RADIOML_2016)
+expand2d = model_path == model_cnn_path
+radioml_ds.load(radioml2016b_path, expand2d=expand2d)
+data = radioml_ds.get_data()
 
 # data = data[:40_000]
 data = data[:1_000]

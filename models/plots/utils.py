@@ -18,7 +18,10 @@ def save_plot(save_path: str):
     if save_path is None:
         plt.show()
     else:
-        plt.savefig(save_path)
+        if save_path.endswith(".pdf"):
+            plt.savefig(save_path, format="pdf", bbox_inches="tight")
+        else:
+            plt.savefig(save_path)
 
 
 class __DatasetCache:

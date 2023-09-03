@@ -6,6 +6,7 @@ from models.layers.encoder import SigModEncoder
 from models.models_common import make_dense_relu_layer as __make_dense_relu_layer
 from ..configuration_utils import ConfigurationUtils
 from typing import Union
+import json
 
 
 @dataclass
@@ -33,8 +34,8 @@ class EncoderTransformerConfiguration(ConfigurationUtils):
     
     n_classes: int
     
-    name = "encoder_transformer_1d_v01x"
-
+    name: str = "encoder_transformer_1d_v01x"
+    
 
 def _create_convolution_layer(
     inp: layers.Layer,

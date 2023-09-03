@@ -39,8 +39,9 @@ def _make_convolutional_layer(
         pool_size=max_pool_size, strides=max_pool_stride, name=f"MAX_POOL_{idx}_"
     )(cnn)
 
-    batch_norm = CustomBatchNorm(name=f"BN{idx}_")(max_pool)
-    relu = layers.ReLU(name=f"CNN_REL{idx}_")(batch_norm)
+    # batch_norm = CustomBatchNorm(name=f"BN{idx}_")(max_pool)
+    # relu = layers.ReLU(name=f"CNN_REL{idx}_")(batch_norm)
+    relu = layers.ReLU(name=f"CNN_REL{idx}_")(max_pool)
     return relu
 
 

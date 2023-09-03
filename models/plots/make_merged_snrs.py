@@ -15,19 +15,22 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 from evaluation.results_serialization import load_results
 
 # Don't change, use --save_png
-EXT = "pgf"
+# EXT = "pgf"
+EXT = "pdf"
 
 
 def main(save_path: str, save_png: bool):
     if save_path is not None:
         if not save_png:
-            matplotlib.use("pgf")
+            pass
+            # matplotlib.use("pgf")
             matplotlib.rcParams.update(
                 {
                     "pgf.texsystem": "pdflatex",
                     "font.family": "serif",
-                    "text.usetex": True,
-                    "pgf.rcfonts": False,
+                    "font.size": 12,
+                    # "text.usetex": True,
+                    # "pgf.rcfonts": False,
                 }
             )
         else:
@@ -36,28 +39,27 @@ def main(save_path: str, save_png: bool):
         os.makedirs(save_path, exist_ok=True)
 
     experiments = [
-        "examples/cnn_test_results/",
-        "examples/cnn_test_results/",
-        "examples/cnn_test_results/",
-        "examples/cnn_test_results/",
-        # "CNN_radio_ML/experiment_0/",
-        # "CNN_radio_ML/experiment_8/",
-        # "encoder_radio_ML/experiment_2/",
-        # "encoder_radio_ML/experiment_8/",
+        "experiments/cnn_1d_v013_small_radio_ml16b_results/",
+        "experiments/enc_v3_small_radio_ml16b_normalized_results/",
+        "experiments/cnn_1d_v013_small_radio_ml16b_quant_results/",
     ]
 
     labels = [
-        "CNN_1:radioML_2016.10a",
-        "CNN_9:radioML_2016.10a",
-        "ENC_3:radioML_2016.10a",
-        "ENC_9:radioML_2016.10a",
+        "CNN",
+        "Encoder",
+        "Quantized CNN",
     ]
 
     labels_latex = [
-        "CNN\\_1:radioML\\_2016.10a",
-        "CNN\\_9:radioML\\_2016.10a",
-        "ENC\\_3:radioML\\_2016.10a",
-        "ENC\\_9:radioML\\_2016.10a",
+        "CNN",
+        "Encoder",
+        "Quantized CNN",
+    ]
+    
+    styles = [
+        '-',
+        '--',
+        ':',
     ]
 
     # fig = plt.figure(figsize=(20,20))
@@ -70,7 +72,7 @@ def main(save_path: str, save_png: bool):
         snr_to_acc = results["snr_to_acc_test"]
         snr_to_accs.append(snr_to_acc)
 
-        ax.plot(list(snr_to_acc.keys()), list(snr_to_acc.values()), label=labels_latex[i])
+        ax.plot(list(snr_to_acc.keys()), list(snr_to_acc.values()), label=labels_latex[i], linestyle=styles[i])
 
     plt.ylim([0, 1])
     ax.set_xlabel("SNR")
@@ -80,13 +82,15 @@ def main(save_path: str, save_png: bool):
     plt.setp(ax.get_xticklabels()[::2], visible=False)
     plt.yticks(np.arange(0, 1, 0.1).tolist())
 
-    x1, x2 = 7, 13
-    y1, y2 = 0.65, 0.95
+    # x1, x2 = 7, 13
+    # y1, y2 = 0.65, 0.95
+    x1, x2 = 9, 17
+    y1, y2 = 0.8, 0.99
 
     axins = zoomed_inset_axes(ax, 1.7, loc=4)  # zoom = 2
     for i, snr_to_acc in enumerate(snr_to_accs):
         # axins.plot(list(snr_to_acc.keys()), list(snr_to_acc.values()), label=labels_latex[i])
-        axins.plot(list(snr_to_acc.keys()), list(snr_to_acc.values()), label=labels_latex[i])
+        axins.plot(list(snr_to_acc.keys()), list(snr_to_acc.values()), label=labels_latex[i], linestyle=styles[i], linewidth=2)
 
     axins.set_xlim(x1, x2)
     axins.set_ylim(y1, y2)

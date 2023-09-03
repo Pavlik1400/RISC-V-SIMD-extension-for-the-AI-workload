@@ -82,6 +82,9 @@ constexpr T const& const_max(const T& x, const T& y, const Args&... rest) {
 constexpr int kTensorArenaSize = const_max<int>(
 
 // My_models_anchor
+#ifdef INCLUDE_MODEL_CNN_1D_V013_SMALL_RADIO_ML16BNO_QUANT
+    200000,
+#endif
 #ifdef INCLUDE_MODEL_CNN_1D_V012_SMALL_RADIO_ML16B_Q_AWARE
     200000,
 #endif
