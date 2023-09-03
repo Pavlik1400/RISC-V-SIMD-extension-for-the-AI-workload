@@ -9,9 +9,15 @@ class SaveMethod(Enum):
     Show = 0
     Png = 1
     Pgf = 2
+    Pdf = 3
 
     def from_str(s: str):
-        return {"show": SaveMethod.Show, "png": SaveMethod.Png, "pgf": SaveMethod.Pgf}[s]
+        return {
+            "show": SaveMethod.Show,
+            "png": SaveMethod.Png,
+            "pgf": SaveMethod.Pgf,
+            "pdf": SaveMethod.Pdf,
+        }[s]
 
 
 def get_save_func(save_method: SaveMethod):
@@ -31,12 +37,14 @@ def get_save_func(save_method: SaveMethod):
             }
         )
         return lambda name: plt.savefig(name + ".pgf")
+    if save_method == SaveMethod.Pdf:
+        return lambda name: plt.savefig(name + ".pdf", format="pdf", bbox_inches="tight")
     raise ValueError("Unknown save method")
 
-    
+
 def load_report_or(path: str, default_value: Dict) -> Dict:
     try:
-        with open(path, 'r') as report_file:
+        with open(path, "r") as report_file:
             report = json.load(report_file)
         return report
     except Exception:

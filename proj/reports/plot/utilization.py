@@ -4,6 +4,18 @@ import numpy as np
 from common import SaveMethod, get_save_func, load_report_or
 from argparse import ArgumentParser
 import os
+import matplotlib
+
+matplotlib.rcParams.update(
+    {
+        "pgf.texsystem": "pdflatex",
+        "font.family": "serif",
+        "font.size": 12,
+        # "text.usetex": True,
+        # "pgf.rcfonts": False,
+    }
+)
+
 
 
 def main(report_filepath: str, save_method: SaveMethod, output_dir: str):
@@ -26,7 +38,7 @@ def main(report_filepath: str, save_method: SaveMethod, output_dir: str):
     im = ax.imshow(values, cmap="Blues")
 
     # Add colorbar
-    cbar = ax.figure.colorbar(im, ax=ax)
+    # cbar = ax.figure.colorbar(im, ax=ax)
 
     # Set the ticks and labels for x-axis and y-axis
     ax.set_xticks(np.arange(len(row_labels)))
@@ -36,15 +48,18 @@ def main(report_filepath: str, save_method: SaveMethod, output_dir: str):
 
     # Rotate the x-axis labels
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    
+    plt.setp(ax.get_yticklabels(), rotation=45, ha="right", rotation_mode="anchor")
 
     # Loop over data dimensions and create text annotations
     for i in range(len(column_labels)):
         for j in range(len(row_labels)):
             color = "black"
             value = values[i, j]
-            if value > 50:
+            if value > 30:
                 color = "white"
-            text = ax.text(j, i, values[i, j], ha="center", va="center", color=color)
+            print(values[i, j])
+            text = ax.text(j, i, ('%.1f' % values[i, j]), ha="center", va="center", color=color)
 
     # Set title and labels
     # ax.set_title("Design Utilization Heatmap (Transposed)")
@@ -60,7 +75,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--report", "-r", required=True)
     parser.add_argument("--output_dir", "-o", default=".")
-    parser.add_argument("--save_method", "-m", default="show", help="Supported: [show, png, pgf]")
+    parser.add_argument("--save_method", "-m", default="show", help="Supported: [show, png, pgf, pdf]")
     args = parser.parse_args()
 
     save_method = SaveMethod.from_str(args.save_method)

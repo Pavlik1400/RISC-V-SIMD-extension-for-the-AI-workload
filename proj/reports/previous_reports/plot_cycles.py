@@ -420,7 +420,7 @@ simulation_data = {
 }
 
 
-generate_pgf = True
+generate_pgf = False
 
 if generate_pgf:
     matplotlib.use("pgf")

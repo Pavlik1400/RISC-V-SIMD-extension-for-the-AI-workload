@@ -22,6 +22,8 @@ def main(input_path: str):
         if i == 0:  # Skip header
             continue
 
+        if line.count(',') != 2:
+            continue
         _, name, ticks = line.strip().split(",")
         cur_cycles = layers_cycles.get(name, 0)
         layers_cycles[name] = cur_cycles + int(ticks) * CYCLES_PER_TICK

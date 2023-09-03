@@ -1,30 +1,108 @@
+ x: eXit to previous menu
+g
+sine> g
+
+Running Run cnn_1d_v012_small_radio_ml16b_q_aware tests (check for expected outputs)
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1891k (      1891036 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.06351828575134277s
+
+[0.06351828575134277]
+.................//measure_time_anchor_end
+  3890k (      3890339 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1887k (      1887281 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.06363129615783691s
+
+[0.06351828575134277, 0.06363129615783691]
+.................//measure_time_anchor_end
+  3886k (      3886473 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1892k (      1892116 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.06328845024108887s
+
+[0.06351828575134277, 0.06363129615783691, 0.06328845024108887]
+.................//measure_time_anchor_end
+  3895k (      3895028 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1887k (      1887236 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.06384658813476562s
+
+[0.06351828575134277, 0.06363129615783691, 0.06328845024108887, 0.06384658813476562]
+.................//measure_time_anchor_end
+  3882k (      3881595 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1890k (      1889834 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.07850933074951172s
+
+[0.06351828575134277, 0.06363129615783691, 0.06328845024108887, 0.06384658813476562, 0.07850933074951172]
+.................//measure_time_anchor_end
+  3889k (      3888779 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1888k (      1888092 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.06354188919067383s
+
+[0.06351828575134277, 0.06363129615783691, 0.06328845024108887, 0.06384658813476562, 0.07850933074951172, 0.06354188919067383]
+.................//measure_time_anchor_end
+  3883k (      3882607 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1893k (      1892559 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.06373119354248047s
+
+[0.06351828575134277, 0.06363129615783691, 0.06328845024108887, 0.06384658813476562, 0.07850933074951172, 0.06354188919067383, 0.06373119354248047]
+.................//measure_time_anchor_end
+  3896k (      3895888 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1893k (      1892553 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.06343841552734375s
+
+[0.06351828575134277, 0.06363129615783691, 0.06328845024108887, 0.06384658813476562, 0.07850933074951172, 0.06354188919067383, 0.06373119354248047, 0.06343841552734375]
+.................//measure_time_anchor_end
+  3894k (      3894360 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1892k (      1892271 )  cycles total
-Copied 256 bytes at 0x400bb820
+//measure_time_anchor_start
+
+
+Measured execution time: 0.06368327140808105s
+
+[0.06351828575134277, 0.06363129615783691, 0.06328845024108887, 0.06384658813476562, 0.07850933074951172, 0.06354188919067383, 0.06373119354248047, 0.06343841552734375, 0.06368327140808105]
+.................//measure_time_anchor_end
+  3894k (      3894217 )  cycles total
+Copied 256 bytes at 0x400bb750
 Running cnn_1d_v012_small_radio_ml16b_q_aware model classification
-.................  1892k (      1892130 )  cycles total
+//measure_time_anchor_start
+
+
+Measured execution time: 0.0632774829864502s
+
+[0.06351828575134277, 0.06363129615783691, 0.06328845024108887, 0.06384658813476562, 0.07850933074951172, 0.06354188919067383, 0.06373119354248047, 0.06343841552734375, 0.06368327140808105, 0.0632774829864502]
+.................//measure_time_anchor_end
+  3895k (      3894798 )  cycles total
 OK   cnn_1d_v012_small_radio_ml16b_q_aware tests passed
+---
+

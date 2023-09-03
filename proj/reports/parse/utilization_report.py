@@ -4,8 +4,8 @@ from common import save_update_report, add_filename_to_path_if_needed
 
 
 def parse_utilization_report(utilization_report_filepath: str, result_filepath: str, design_name: str):
-    power_report_filepath = add_filename_to_path_if_needed(
-        power_report_filepath, "digilent_arty_utilization_place.rpt"
+    utilization_report_filepath = add_filename_to_path_if_needed(
+        utilization_report_filepath, "digilent_arty_utilization_place.rpt"
     )
     
     utilization = {}
