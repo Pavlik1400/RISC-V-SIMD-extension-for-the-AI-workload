@@ -96,13 +96,22 @@ def main(
     x = np.arange(len(v6x_cycles))
     hardware_bars = ax_vx.bar(
         # x + width + .1, v6x_cycles, color="#ebbd34", width=width, label="CFU_V6"
-        x + width + .1, v6x_cycles, color="#DB5461", width=width, label="CFU_V6"
+        x + width + 0.1,
+        v6x_cycles,
+        color="#DB5461",
+        width=width,
+        label="CFU_V6"
         # x + width + 0.1, v6x_cycles, color="#DB5461", width=width, label="Hardware",
     )
 
     simulation_bars = ax_vx.bar(
         # x, v5_cycles, color="#63A8D3", width=width, label="CFU_V5"
-        x, v5_cycles, color="#329F5B", width=width, label="CFU_V5"
+        x,
+        v5_cycles,
+        # color="#329F5B",
+        color="#6DB1BF",
+        width=width,
+        label="CFU_V5"
         # x, v5_cycles, color="#329F5B", width=width, label="Software",
     )
     # ax_vx.set_xticklabels(x + width / 2 + .05, v5x_versions)

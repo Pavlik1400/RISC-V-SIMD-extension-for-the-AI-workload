@@ -7,6 +7,7 @@ import matplotlib
 import sys
 from utils import get_modulations, save_plot
 from argparse import ArgumentParser
+import seaborn as sns
 
 # TODO: ugly
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
@@ -17,6 +18,7 @@ from evaluation.results_serialization import load_results
 # Don't change, use --save_png
 # EXT = "pgf"
 EXT = "pdf"
+scale = 100.0
 
 experiment = "experiments/cnn_1d_v013_small_radio_ml16b_quant_results/"
 # label = "Quantized CNN Confusion matrix"
@@ -25,7 +27,7 @@ def confusion_values_to_acc(confusion_matrix: np.ndarray):
     confusion_matrix = confusion_matrix.astype(np.float64)
     for r in range(confusion_matrix.shape[0]):
         row = confusion_matrix[r]
-        confusion_matrix[r] = row / np.sum(row)
+        confusion_matrix[r] = row / np.sum(row) * scale
     return confusion_matrix
 
 def confusion_matrix_plot(save_path: str):
@@ -49,9 +51,11 @@ def confusion_matrix_plot(save_path: str):
         cmap="Blues",
         ax=ax,
         colorbar=True,
-        values_format="0.0f",
+        # values_format="0.0f",
         xticks_rotation="vertical",
     )
+    
+    # sns.heatmap(confusion_matrix, annot=True, fmt='g', ax=ax, vmax=scale, vmin=0);  #annot=True to annotate cells, ftm='g' to disable scientific notation
 
     # Add labels to the x-axis and y-axis
     ax.set_xlabel("Predicted")

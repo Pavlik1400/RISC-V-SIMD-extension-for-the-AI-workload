@@ -112,7 +112,8 @@ def main(
         # x,
         x + width + 0.1,
         v5_cycles,
-        color="#329F5B",
+        # color="#329F5B",
+        color="#6DB1BF",
         width=width,
         label="Simulation",
     )

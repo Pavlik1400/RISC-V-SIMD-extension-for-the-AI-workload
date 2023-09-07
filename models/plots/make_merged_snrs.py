@@ -17,6 +17,7 @@ from evaluation.results_serialization import load_results
 # Don't change, use --save_png
 # EXT = "pgf"
 EXT = "pdf"
+scale = 100
 
 
 def main(save_path: str, save_png: bool):
@@ -72,25 +73,27 @@ def main(save_path: str, save_png: bool):
         snr_to_acc = results["snr_to_acc_test"]
         snr_to_accs.append(snr_to_acc)
 
-        ax.plot(list(snr_to_acc.keys()), list(snr_to_acc.values()), label=labels_latex[i], linestyle=styles[i])
+        snrs = np.array(list(snr_to_acc.values())) * scale
+        ax.plot(list(snr_to_acc.keys()), snrs, label=labels_latex[i], linestyle=styles[i])
 
-    plt.ylim([0, 1])
-    ax.set_xlabel("SNR")
-    ax.set_ylabel("Accuracy")
+    plt.ylim([0, 1 * scale])
+    ax.set_xlabel("SNR (dB)")
+    ax.set_ylabel("Accuracy (%)")
     ax.legend(loc="upper left")
     ax.grid()
     plt.setp(ax.get_xticklabels()[::2], visible=False)
-    plt.yticks(np.arange(0, 1, 0.1).tolist())
+    plt.yticks(np.arange(0, 1 * scale, 0.1 * scale).tolist())
 
     # x1, x2 = 7, 13
     # y1, y2 = 0.65, 0.95
     x1, x2 = 9, 17
-    y1, y2 = 0.8, 0.99
+    y1, y2 = 0.8 * scale, 0.99 * scale
 
     axins = zoomed_inset_axes(ax, 1.7, loc=4)  # zoom = 2
     for i, snr_to_acc in enumerate(snr_to_accs):
         # axins.plot(list(snr_to_acc.keys()), list(snr_to_acc.values()), label=labels_latex[i])
-        axins.plot(list(snr_to_acc.keys()), list(snr_to_acc.values()), label=labels_latex[i], linestyle=styles[i], linewidth=2)
+        snrs = np.array(list(snr_to_acc.values())) * scale
+        axins.plot(list(snr_to_acc.keys()), snrs, label=labels_latex[i], linestyle=styles[i], linewidth=2)
 
     axins.set_xlim(x1, x2)
     axins.set_ylim(y1, y2)
@@ -101,9 +104,9 @@ def main(save_path: str, save_png: bool):
     # ax.legend()
     plt.draw()
 
-    # plt.show()
-    save_filepath = os.path.join(save_path, f"snr_to_acc.{EXT}") if save_path is not None else None
-    save_plot(save_filepath)
+    plt.show()
+    # save_filepath = os.path.join(save_path, f"snr_to_acc.{EXT}") if save_path is not None else None
+    # save_plot(save_filepath)
 
 
 if __name__ == "__main__":

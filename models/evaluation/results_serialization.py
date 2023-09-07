@@ -92,7 +92,7 @@ def load_results(where: str, load_model=False):
         results = json.load(results_file)
     results["model_configuration"] = load_model_configuration(results["model_configuration"])
     if load_model:
-        if results["is_tflite"]:
+        if results.get("is_tflite", False):
             with open(where + "/model_tflite", 'rb') as model_file:
                 results["model"] = model_file.read()
         else:
