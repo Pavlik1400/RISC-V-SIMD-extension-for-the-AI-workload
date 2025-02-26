@@ -31,7 +31,7 @@ def main(report_filepath: str, save_method: SaveMethod, output_dir: str):
     values = values.T  # Transpose the values
 
     # Create a figure and axis
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(dpi=200)
 
     # Create the heatmap
     # im = ax.imshow(values, cmap='YlOrRd')

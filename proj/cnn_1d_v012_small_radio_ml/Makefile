@@ -24,7 +24,7 @@ DEFINES += NDEBUG
 # DEFINES += CONFIG_CPU_PERF_CSRS
 
 # Uncomment this line to skip individual profiling output (has minor effect on performance).
-DEFINES += NPROFILE
+# DEFINES += NPROFILE
 
 # Uncomment to include specified model in built binary
 # Models defines anchor
